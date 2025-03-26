@@ -1,0 +1,20 @@
+import scrapy
+
+class EttodaySpider(scrapy.Spider):
+    name = "ettoday"
+    allowed_domains = ["ettoday.net"]
+    start_urls = ["https://www.ettoday.net/"]
+
+    def parse(self, response):
+        # 選取所有新聞的 <a> 標籤，包含 href 和 標題文字
+        articles = response.xpath('//a[starts-with(@href, "https://www.ettoday.net/news/")]')
+
+        for article in articles:
+            title = article.xpath('text()').get()
+            url = article.xpath('@href').get()
+
+            # 避免空白項目
+            if title and url:
+                print(f"標題：{title.strip()}")
+                print(f"連結：{url}")
+                print("-" * 40)
